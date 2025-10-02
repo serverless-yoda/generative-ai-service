@@ -1,3 +1,5 @@
+# app/core/models.py
+
 import tokenize
 import torch
 import numpy as np
@@ -5,8 +7,8 @@ from numpy.typing import NDArray
 from typing import Tuple
 from PIL import Image
 
-from app.schemas import VoicePresets
-from app.utils import float32_to_wav_bytes, audio_array_to_buffer
+from app.api.core.schemas import VoicePresets
+#from app.api.core.utils import  float32_to_wav_bytes, audio_array_to_buffer
 
 
 from transformers import Pipeline, pipeline, AutoProcessor, AutoModel, BarkProcessor, BarkModel
@@ -102,9 +104,8 @@ def generate_audio(
 
 
 def load_image_model() -> StableDiffusionInpaintPipelineLegacy:
-    dtype = torch.float16 if device.type == "cuda" else torch.float32
     return (
-        DiffusionPipeline.from_pretrained("segmind/tiny-sd",torch_dtype=dtype, device=device )
+        DiffusionPipeline.from_pretrained("segmind/tiny-sd",dtype=dtype, device=device )
     )
 
 def generate_image(
@@ -114,11 +115,22 @@ def generate_image(
     return output
 
 def load_video_model() -> StableVideoDiffusionPipeline:
-    dtype = torch.float16 if device.type == "cuda" else torch.float32
+
     pipe = StableVideoDiffusionPipeline.from_pretrained(
         "stabilityai/stable-video-diffusion-img2vid",
-        torch_dtype=dtype ,
+        dtype=dtype ,
         variant="fp16",
         device=device,
     )
     return pipe
+
+
+def generate_video(
+    pipe: StableVideoDiffusionPipeline, image: Image.Image, num_frames: int = 25
+) -> list[Image.Image]:
+    image = image.resize((1024, 576))
+    generator = torch.manual_seed(42)
+    frames = pipe(
+        image, decode_chunk_size=8, generator=generator, num_frames=num_frames
+    ).frames[0]
+    return frames

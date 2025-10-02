@@ -1,5 +1,5 @@
 
-# app.py
+# app/api/client/ui.py
 import requests
 import streamlit as st
 
