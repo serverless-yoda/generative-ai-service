@@ -1,4 +1,4 @@
-# app/core/config.py
+# generative-ai-service/app/api/core/config.py
 
 from pydantic_settings import BaseSettings
 

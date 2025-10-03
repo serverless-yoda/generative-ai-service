@@ -1,4 +1,4 @@
-# app/api/routes/chat.py
+# generative-ai-service/app/api/routes/chat.py
 
 from fastapi import APIRouter
 from app.api.core.services import GenerationService

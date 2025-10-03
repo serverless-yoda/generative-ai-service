@@ -1,5 +1,3 @@
-
-# app/api/client/ui.py
 import requests
 import streamlit as st
 
@@ -9,7 +7,6 @@ st.title("FastAPI Services")
 # -----------------------------
 # Session state: chat history
 # -----------------------------
-# Each message: { "role": "user|assistant", "type": "text|audio|image", "content": (str|bytes), "mime": Optional[str] }
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -21,12 +18,13 @@ with st.sidebar:
     base_url = st.text_input("FastAPI base URL", value="http://localhost:8000")
     mode = st.radio(
         "Response type",
-        options=["Chat (Text)", "Generate Audio", "Generate Image"],
+        options=["Chat (Text)", "Generate Audio", "Generate Image", "Generate 3D"],
         help=(
             "Select what you want the assistant to return for your prompt:\n"
-            "• Chat (Text): calls POST /generate/text\n"
+            "• Chat (Text): calls GET /generate/text\n"
             "• Generate Audio: calls GET /generate/audio\n"
-            "• Generate Image: calls GET /generate/image"
+            "• Generate Image: calls GET /generate/image\n"
+            "• Generate 3D: calls GET /generate/3d"
         ),
     )
     st.divider()
@@ -51,7 +49,6 @@ def render_message(message: dict):
         if msg_type == "text":
             st.markdown(content)
         elif msg_type == "audio":
-            # Streamlit will infer format; provide mime if you have it
             st.text("🎵 Generated audio")
             st.audio(content, format=mime)
             st.download_button(
@@ -71,13 +68,21 @@ def render_message(message: dict):
                 mime=mime or "application/octet-stream",
                 use_container_width=True,
             )
+        elif msg_type == "3d":
+            st.text("📦 Generated 3D model (.obj)")
+            st.download_button(
+                "Download 3D Model",
+                data=content,
+                file_name="model_output.obj",
+                mime=mime or "application/octet-stream",
+                use_container_width=True,
+            )
         else:
             st.markdown(f"*Unsupported message type:* `{msg_type}`")
 
 def _ext_from_mime(mime: str | None, default_ext: str) -> str:
     if not mime:
         return default_ext
-    # Very light mapping; extend as needed
     if "wav" in mime:
         return ".wav"
     if "mpeg" in mime or "mp3" in mime:
@@ -92,19 +97,15 @@ def _ext_from_mime(mime: str | None, default_ext: str) -> str:
         return ".jpg"
     if "webp" in mime:
         return ".webp"
+    if "obj" in mime:
+        return ".obj"
     return default_ext
 
 def call_text_api(prompt: str) -> str:
     url = f"{base_url.rstrip('/')}/generate/text"
     resp = requests.get(url, params={"prompt": prompt}, timeout=240)
     resp.raise_for_status()
-    try:
-        data = resp.json()
-        #return data.get("text", resp.text)
-        return resp.text
-    except ValueError:
-        # Fallback when server responds with raw text
-        return resp.text
+    return resp.text
 
 def call_audio_api(prompt: str) -> tuple[bytes, str | None]:
     url = f"{base_url.rstrip('/')}/generate/audio"
@@ -116,6 +117,13 @@ def call_audio_api(prompt: str) -> tuple[bytes, str | None]:
 def call_image_api(prompt: str) -> tuple[bytes, str | None]:
     url = f"{base_url.rstrip('/')}/generate/image"
     resp = requests.get(url, params={"prompt": prompt}, timeout=120)
+    resp.raise_for_status()
+    mime = resp.headers.get("Content-Type")
+    return resp.content, mime
+
+def call_3d_api(prompt: str) -> tuple[bytes, str | None]:
+    url = f"{base_url.rstrip('/')}/generate/3d"
+    resp = requests.get(url, params={"prompt": prompt, "num_inference_steps": 25}, timeout=300)
     resp.raise_for_status()
     mime = resp.headers.get("Content-Type")
     return resp.content, mime
@@ -133,15 +141,14 @@ placeholder = {
     "Chat (Text)": "Ask anything…",
     "Generate Audio": "Describe the audio/voice you want…",
     "Generate Image": "Describe the image you want…",
+    "Generate 3D": "Describe the 3D object you want…",
 }[mode]
 
 if prompt := st.chat_input(placeholder):
-    # 1) Store & show user message
     append_message("user", "text", prompt)
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # 2) Route to the correct FastAPI endpoint
     try:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
@@ -161,6 +168,18 @@ if prompt := st.chat_input(placeholder):
                     st.text("Here is your generated image")
                     st.image(image_bytes)
                     append_message("assistant", "image", image_bytes, mime)
+
+                elif mode == "Generate 3D":
+                    obj_bytes, mime = call_3d_api(prompt)
+                    st.text("Here is your generated 3D model")
+                    st.download_button(
+                        "Download 3D Model",
+                        data=obj_bytes,
+                        file_name=f"{prompt}.obj",
+                        mime=mime or "application/octet-stream",
+                        use_container_width=True,
+                    )
+                    append_message("assistant", "3d", obj_bytes, mime)
 
     except requests.exceptions.RequestException as e:
         with st.chat_message("assistant"):

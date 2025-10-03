@@ -1,4 +1,5 @@
-# app/api/routes/video.py
+# generative-ai-service/app/api/routes/video.py
+
 from fastapi import APIRouter, File, Query
 from fastapi.responses import StreamingResponse
 from app.api.core.services import GenerationService
