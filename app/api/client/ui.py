@@ -18,19 +18,20 @@ with st.sidebar:
     base_url = st.text_input("FastAPI base URL", value="http://localhost:8000")
     mode = st.radio(
         "Response type",
-        options=["Chat (Text)", "Generate Audio", "Generate Image", "Generate 3D"],
+        options=["Chat (Text)", "Generate Audio", "Generate Image", "Generate 3D", "Generate Video"],
         help=(
             "Select what you want the assistant to return for your prompt:\n"
             "• Chat (Text): calls GET /generate/text\n"
             "• Generate Audio: calls GET /generate/audio\n"
             "• Generate Image: calls GET /generate/image\n"
-            "• Generate 3D: calls GET /generate/3d"
+            "• Generate 3D: calls GET /generate/3d\n"
+            "• Generate Video: calls POST /generate/video"
         ),
     )
     st.divider()
     if st.button("🧹 Clear chat"):
         st.session_state.messages.clear()
-        st.rerun()
+        st.experimental_rerun()
 
 # -----------------------------
 # Helpers
@@ -39,6 +40,7 @@ def append_message(role: str, msg_type: str, content, mime: str | None = None):
     st.session_state.messages.append(
         {"role": role, "type": msg_type, "content": content, "mime": mime}
     )
+
 
 def render_message(message: dict):
     with st.chat_message(message["role"]):
@@ -77,8 +79,19 @@ def render_message(message: dict):
                 mime=mime or "application/octet-stream",
                 use_container_width=True,
             )
+        elif msg_type == "video":
+            st.text("🎥 Generated video")
+            st.video(content)
+            st.download_button(
+                "Download video",
+                data=content,
+                file_name="video_output.mp4",
+                mime=mime or "video/mp4",
+                use_container_width=True,
+            )
         else:
             st.markdown(f"*Unsupported message type:* `{msg_type}`")
+
 
 def _ext_from_mime(mime: str | None, default_ext: str) -> str:
     if not mime:
@@ -99,13 +112,17 @@ def _ext_from_mime(mime: str | None, default_ext: str) -> str:
         return ".webp"
     if "obj" in mime:
         return ".obj"
+    if "mp4" in mime:
+        return ".mp4"
     return default_ext
+
 
 def call_text_api(prompt: str) -> str:
     url = f"{base_url.rstrip('/')}/generate/text"
     resp = requests.get(url, params={"prompt": prompt}, timeout=240)
     resp.raise_for_status()
     return resp.text
+
 
 def call_audio_api(prompt: str) -> tuple[bytes, str | None]:
     url = f"{base_url.rstrip('/')}/generate/audio"
@@ -114,6 +131,7 @@ def call_audio_api(prompt: str) -> tuple[bytes, str | None]:
     mime = resp.headers.get("Content-Type")
     return resp.content, mime
 
+
 def call_image_api(prompt: str) -> tuple[bytes, str | None]:
     url = f"{base_url.rstrip('/')}/generate/image"
     resp = requests.get(url, params={"prompt": prompt}, timeout=120)
@@ -121,9 +139,20 @@ def call_image_api(prompt: str) -> tuple[bytes, str | None]:
     mime = resp.headers.get("Content-Type")
     return resp.content, mime
 
+
 def call_3d_api(prompt: str) -> tuple[bytes, str | None]:
     url = f"{base_url.rstrip('/')}/generate/3d"
     resp = requests.get(url, params={"prompt": prompt, "num_inference_steps": 25}, timeout=300)
+    resp.raise_for_status()
+    mime = resp.headers.get("Content-Type")
+    return resp.content, mime
+
+
+def call_video_api(image_file, num_frames: int) -> tuple[bytes, str | None]:
+    url = f"{base_url.rstrip('/')}/generate/video"
+    files = {"image": ("uploaded_img.png", image_file, "image/png")}
+    params = {"num_frames": num_frames}
+    resp = requests.post(url, files=files, params=params, timeout=600)
     resp.raise_for_status()
     mime = resp.headers.get("Content-Type")
     return resp.content, mime
@@ -142,7 +171,12 @@ placeholder = {
     "Generate Audio": "Describe the audio/voice you want…",
     "Generate Image": "Describe the image you want…",
     "Generate 3D": "Describe the 3D object you want…",
+    "Generate Video": "Upload an image to use as the video seed…",
 }[mode]
+
+if mode == "Generate Video":
+    uploaded_file = st.file_uploader("Upload image to generate video", type=["png", "jpg", "jpeg"])
+    num_frames = st.number_input("Number of frames", min_value=1, max_value=100, value=25)
 
 if prompt := st.chat_input(placeholder):
     append_message("user", "text", prompt)
@@ -180,6 +214,19 @@ if prompt := st.chat_input(placeholder):
                         use_container_width=True,
                     )
                     append_message("assistant", "3d", obj_bytes, mime)
+
+                elif mode == "Generate Video":
+                    if uploaded_file is not None:
+                        video_bytes, mime = call_video_api(uploaded_file.getvalue(), num_frames)
+                        st.video(video_bytes)
+                        st.download_button(
+                            "Download generated video",
+                            data=video_bytes,
+                            file_name="generated_video.mp4",
+                            mime=mime or "video/mp4",
+                            use_container_width=True,
+                        )
+                        append_message("assistant", "video", video_bytes, mime)
 
     except requests.exceptions.RequestException as e:
         with st.chat_message("assistant"):

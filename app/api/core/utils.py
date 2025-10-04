@@ -13,28 +13,36 @@ from pathlib import Path
 
 from diffusers.pipelines.shap_e.renderer import MeshDecoderOutput
 
-def mesh_to_obj_buffer(mesh: MeshDecoderOutput) -> BytesIO:
+
+
+def export_to_image_buffer(image: Image.Image) -> BytesIO:
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer
+
+
+def mesh_to_obj_buffer(mesh):
     mesh_o3d = o3d.geometry.TriangleMesh()
-    mesh_o3d.vertices = o3d.utility.Vector3dVector(
-        mesh.verts.cpu().detach().numpy()
-    )
-    mesh_o3d.triangles = o3d.utility.Vector3iVector(
-        mesh.faces.cpu().detach().numpy()
-    )
+    mesh_o3d.vertices = o3d.utility.Vector3dVector(mesh.verts.cpu().detach().numpy())
+    mesh_o3d.triangles = o3d.utility.Vector3iVector(mesh.faces.cpu().detach().numpy())
 
-    if len(mesh.vertex_channels) == 3:  # You have color channels
-        vert_color = torch.stack(
-            [mesh.vertex_channels[channel] for channel in "RGB"], dim=1
-        )
-        mesh_o3d.vertex_colors = o3d.utility.Vector3dVector(
-            vert_color.cpu().detach().numpy()
-        )
+    # Handle vertex colors if present
+    if hasattr(mesh, "vertex_channels") and len(mesh.vertex_channels) == 3:
+        vert_color = torch.stack([mesh.vertex_channels[channel] for channel in "RGB"], dim=1)
+        mesh_o3d.vertex_colors = o3d.utility.Vector3dVector(vert_color.cpu().detach().numpy())
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".obj") as tmp:
-        o3d.io.write_triangle_mesh(Path(tmp.name), mesh_o3d, write_ascii=True)
-        with open(tmp.name, "rb") as f:
+    # Create a temporary file and close its handle immediately after getting the name
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".obj")
+    tmp_path = tmp.name
+    tmp.close()  # Close so Open3D can write to it on Windows
+
+    try:
+        o3d.io.write_triangle_mesh(tmp_path, mesh_o3d, write_ascii=True)
+        with open(tmp_path, "rb") as f:
             buffer = BytesIO(f.read())
-        os.remove(tmp.name)
+    finally:
+        os.remove(tmp_path)
 
     return buffer
 

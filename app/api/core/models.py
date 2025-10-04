@@ -158,4 +158,7 @@ def generate_3d_geometry(pipe, prompt: str, num_inference_steps: int):
         num_inference_steps=num_inference_steps,  # NOTE: is it "num_inference_steps"?
         output_type="mesh",
     )
+   
+    #print("Result keys:", result.keys())
+    #print("Images:", result.images)
     return result.images[0]

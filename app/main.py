@@ -1,26 +1,28 @@
 # generative-ai-service/app/main.py
 
 from fastapi import FastAPI
-from app.api.core.config import settings
-from app.api.core.lifespan import ai_lifespan
+from app.api.routes.chat_async import router as chat_router
+from app.api.routes.audio_async import router as audio_router
+from app.api.routes.image_async import router as image_router
+from app.api.routes.three_d_async import router as three_d_router
+from app.api.routes.video_async import router as video_router
 
-# Import router modules directly to avoid package __init__ side-effects
-from app.api.routes.chat import router as chat_router
-from app.api.routes.audio import router as audio_router
-from app.api.routes.image import router as image_router
-from app.api.routes.video import router as video_router
-from app.api.routes.threeD import router as three_d_router
 
-# Attach lifespan to manage (optional) preload + cleanup
-app = FastAPI(title=settings.app_name, lifespan=ai_lifespan)
 
-# Include all feature routers
-app.include_router(chat_router,   prefix="/chat",  tags=["chat"])
-app.include_router(audio_router,  prefix="/audio", tags=["audio"])
-app.include_router(image_router,  prefix="/image", tags=["image"])
-app.include_router(video_router,  prefix="/video", tags=["video"])
-app.include_router(three_d_router, prefix="/3d",   tags=["3d"])
+#from app.api.routes import async_endpoints, chat, image
+
+app = FastAPI(title="Generative AI Service")
+
+#app.include_router(async_endpoints.router, prefix="/generate", tags=["async"])
+#app.include_router(chat.router, prefix="/chat", tags=["chat"])
+#app.include_router(image.router, prefix="/image", tags=["image"])
+
+app.include_router(chat_router,    prefix="/generate", tags=['async'])
+app.include_router(audio_router,   prefix="/generate", tags=['async'])
+app.include_router(image_router,   prefix="/generate", tags=['async'])
+app.include_router(three_d_router, prefix="/generate", tags=['async'])
+app.include_router(video_router,   prefix="/generate", tags=['async'])
 
 @app.get("/")
-def health_check():
+async def root():
     return {"status": "healthy"}
