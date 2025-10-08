@@ -1,0 +1,51 @@
+# generative-ai-service/app/api/core/services.py
+from fastapi.responses import StreamingResponse
+from fastapi import Request,Depends
+
+from app.api.core.models import (
+    load_text_model,  generate_text,
+    load_audio_model, generate_audio,
+    load_image_model, generate_image,
+    load_video_model, generate_video,
+    load_3d_model,    generate_3d_geometry
+)
+from app.api.core.utils import audio_array_to_buffer, img_to_bytes, export_to_video_buffer
+from PIL import Image
+from io import BytesIO
+
+
+def get_models(request: Request):
+    return request.app.state.models
+
+class GenerationService:
+    def __init__(self, models: dict = Depends(get_models)):        
+        self.text_pipe = models["text"]  # TinyLlama pipeline
+        self.audio_pipe = models["audio"]
+        self.image_pipe = models["image"]
+        self.video_pipe = models["video"]
+        self.geometry_pipe = models["3d"]
+
+
+    def generate_text(self, prompt: str) -> str:
+        return generate_text(self.text_pipe, prompt)
+
+    def generate_audio(self, prompt: str, preset):
+        self.audio_processor, self.audio_model = self.audio_pipe
+        audio_data, sample_rate = generate_audio(self.audio_processor, self.audio_model, prompt, preset)
+        return audio_data, sample_rate
+
+    def generate_image(self, prompt: str):
+        self.image_pipe = self.image_pipe        
+        return generate_image(self.image_pipe, prompt)
+
+    def generate_video(self, image_bytes: bytes, num_frames: int):
+        self.video_pipe = self.video_pipe       
+        image = Image.open(BytesIO(image_bytes))
+        frames = generate_video(self.video_pipe, image, num_frames)
+        return frames
+
+    def generate_3d(self,prompt: str, num_inference_steps: int = 25):
+        self.threeD_pipe = self.geometry_pipe
+        return  generate_3d_geometry(self.threeD_pipe,prompt=prompt,num_inference_steps=num_inference_steps)
+        
+

@@ -1,0 +1,115 @@
+
+@startuml architecture_detailed
+skinparam classAttributeIconSize 0
+
+package "client" {
+  class StreamlitUI {
+    +append_message(role, type, content, mime)
+    +render_message(message)
+    +call_text_api(prompt)
+    +call_audio_api(prompt)
+    +call_image_api(prompt)
+    +call_3d_api(prompt)
+  }
+}
+
+package "api.routes" {
+  class ChatRouter {
+    +generate_text_endpoint(prompt)
+  }
+  class AudioRouter {
+    +generate_audio_endpoint(prompt, preset)
+  }
+  class ImageRouter {
+    +generate_image_endpoint(prompt)
+  }
+  class VideoRouter {
+    +generate_video_endpoint(image, num_frames)
+    +generate_3d_endpoint(prompt, num_inference_steps)
+  }
+}
+
+package "core.services" {
+  class GenerationService {
+    -text_pipe
+    -audio_processor
+    -audio_model
+    -image_pipe
+    -video_pipe
+    -threeD_pipe
+
+    +generate_text(prompt)
+    +generate_audio(prompt, preset)
+    +generate_image(prompt)
+    +generate_video(image_bytes, num_frames)
+    +generate_3d(prompt, num_inference_steps)
+  }
+}
+
+package "core.models" {
+  class TextModel {
+    +load_text_model()
+    +generate_text(pipe, prompt)
+  }
+  class AudioModel {
+    +load_audio_model()
+    +generate_audio(processor, model, prompt, preset)
+  }
+  class ImageModel {
+    +load_image_model()
+    +generate_image(pipe, prompt)
+  }
+  class VideoModel {
+    +load_video_model()
+    +generate_video(pipe, image, num_frames)
+  }
+  class ThreeDModel {
+    +load_3d_model()
+    +generate_3d_geometry(pipe, prompt, num_inference_steps)
+  }
+}
+
+package "core.utils" {
+  class Utils {
+    +export_to_video_buffer(images)
+    +img_to_bytes(image)
+    +audio_array_to_buffer(audio_array, sample_rate)
+    +float32_to_wav_bytes(audio, sample_rate)
+    +mesh_to_obj_buffer(mesh)
+  }
+}
+
+package "core.config" {
+  class Settings {
+    -app_name
+    -azure_endpoint_url
+    -azure_deployment_name
+    -azure_openai_api_key
+    -azure_openai_version
+  }
+}
+
+StreamlitUI --> ChatRouter : calls
+StreamlitUI --> AudioRouter : calls
+StreamlitUI --> ImageRouter : calls
+StreamlitUI --> VideoRouter : calls
+
+ChatRouter --> GenerationService : uses
+AudioRouter --> GenerationService : uses
+ImageRouter --> GenerationService : uses
+VideoRouter --> GenerationService : uses
+
+GenerationService --> TextModel : uses
+GenerationService --> AudioModel : uses
+GenerationService --> ImageModel : uses
+GenerationService --> VideoModel : uses
+GenerationService --> ThreeDModel : uses
+
+GenerationService --> Utils : uses
+TextModel ..> Settings : reads config
+AudioModel ..> Settings : reads config
+ImageModel ..> Settings : reads config
+VideoModel ..> Settings : reads config
+ThreeDModel ..> Settings : reads config
+
+@enduml
