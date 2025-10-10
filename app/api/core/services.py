@@ -26,8 +26,12 @@ class GenerationService:
         self.geometry_pipe = models["3d"]
 
 
-    def generate_text(self, prompt: str) -> str:
-        return generate_text(self.text_pipe, prompt)
+    def generate_text(self, prompt: str,  
+        temperature: float = 0.7,
+        max_new_tokens: int = 256,
+        top_k: int = 50,
+        top_p: float = 0.95) -> str:
+        return generate_text(self.text_pipe, prompt,temperature,max_new_tokens,top_k,top_p)
 
     def generate_audio(self, prompt: str, preset):
         self.audio_processor, self.audio_model = self.audio_pipe

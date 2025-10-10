@@ -1,4 +1,4 @@
-# generative-ai-service/app/api/routes/threeD.py
+# generative-ai-service/app/api/routes/three_d_async.py
 import asyncio
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import StreamingResponse
