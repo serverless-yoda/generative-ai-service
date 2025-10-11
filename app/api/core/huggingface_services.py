@@ -9,7 +9,7 @@ from app.api.models.huggingface_models import (
     load_video_model, generate_video,
     load_3d_model,    generate_3d_geometry
 )
-from app.api.core.utils import audio_array_to_buffer, img_to_bytes, export_to_video_buffer
+
 from PIL import Image
 from io import BytesIO
 
