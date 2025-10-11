@@ -44,3 +44,7 @@ next-env.d.ts
 /genai-service
 /app/__*
 *.csv
+
+**/__pycache__/
+*.pyc
+
