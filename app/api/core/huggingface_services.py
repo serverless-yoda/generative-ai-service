@@ -2,7 +2,7 @@
 from fastapi.responses import StreamingResponse
 from fastapi import Request,Depends
 
-from app.api.core.models import (
+from app.api.models.huggingface_models import (
     load_text_model,  generate_text,
     load_audio_model, generate_audio,
     load_image_model, generate_image,
@@ -19,11 +19,11 @@ def get_models(request: Request):
 
 class GenerationService:
     def __init__(self, models: dict = Depends(get_models)):        
-        self.text_pipe = models["text"]  # TinyLlama pipeline
-        self.audio_pipe = models["audio"]
-        self.image_pipe = models["image"]
-        self.video_pipe = models["video"]
-        self.geometry_pipe = models["3d"]
+        self.text_pipe     = models["HF_text"]  # TinyLlama pipeline
+        self.audio_pipe    = models["HF_audio"]
+        self.image_pipe    = models["HF_image"]
+        self.video_pipe    = models["HF_video"]
+        self.geometry_pipe = models["HF_3d"]
 
 
     def generate_text(self, prompt: str,  

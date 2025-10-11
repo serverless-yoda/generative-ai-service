@@ -10,10 +10,15 @@ python-multipart
 diffusers
 accelerate
 open3d
-celery[redis] 
-redis
+#celery[redis] 
+#redis
+aiohttp # needed for webscraping
+bs4     # needed for webscraping
+asyncio # needed for webscraping
+lxml    # needed for webscraping
+
 tiktoken
 av     # implements Python bindings to the popular ffmpeg video processing library
-isort  #Sorts imports in Python modules
-loguru #Replacing Python’s built-in logger module
-mypy   #A powerful static type checker that can help catch a lot of bugs in your code
+isort  # Sorts imports in Python modules
+loguru # Replacing Python’s built-in logger module
+mypy   # A powerful static type checker that can help catch a lot of bugs in your code

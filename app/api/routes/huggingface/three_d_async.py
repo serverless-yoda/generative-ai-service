@@ -1,9 +1,9 @@
-# generative-ai-service/app/api/routes/three_d_async.py
+# generative-ai-service/app/api/routes/huggingface/three_d_async.py
 import asyncio
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import StreamingResponse
 
-from app.api.core.services import GenerationService
+from app.api.core.huggingface_services import GenerationService
 from app.api.core.utils import mesh_to_obj_buffer 
 
 

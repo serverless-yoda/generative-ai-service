@@ -1,8 +1,8 @@
-# generative-ai-service/app/api/routes/text_async.py
+# generative-ai-service/app/api/routes/huggingface/text_async.py
 import asyncio
 from fastapi import Depends,APIRouter, HTTPException, Body, status
 
-from app.api.core.services import GenerationService
+from app.api.core.huggingface_services import GenerationService
 from app.api.core.schemas import TextModelRequest,TextModelResponse
 router = APIRouter()
 

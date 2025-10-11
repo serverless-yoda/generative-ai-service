@@ -1,4 +1,4 @@
-# app/api/core/models.py
+# app/api/models/huggingface_models.py
 from __future__ import annotations
 
 import os
