@@ -48,3 +48,6 @@ next-env.d.ts
 # remove cache files
 **/__pycache__/
 *.pyc
+
+# dont add upload folder
+/upload

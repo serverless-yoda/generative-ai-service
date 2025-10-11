@@ -18,14 +18,16 @@ with st.sidebar:
     base_url = st.text_input("FastAPI base URL", value="http://localhost:8000")
     mode = st.radio(
         "Response type",
-        options=["Chat (Text)", "Generate Audio", "Generate Image", "Generate 3D", "Generate Video"],
+        options=["Chat (Text)", "Generate Audio", "Generate Image", "Generate 3D", "Generate Video", "Generate Text"],
         help=(
             "Select what you want the assistant to return for your prompt:\n"
-            "• Chat (Text): calls GET /generate/text\n"
+            "• Chat (Text): calls GET /generate/chat\n"
             "• Generate Audio: calls GET /generate/audio\n"
             "• Generate Image: calls GET /generate/image\n"
             "• Generate 3D: calls GET /generate/3d\n"
             "• Generate Video: calls POST /generate/video"
+            "• Generate Text: calls POST /generate/text"
+            
         ),
     )
     st.divider()

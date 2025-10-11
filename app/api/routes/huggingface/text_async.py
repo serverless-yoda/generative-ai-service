@@ -8,7 +8,6 @@ from fastapi import (
         status,
         Request
     )
-from app.api.common.web_scraping import extract_url, fetch_all_urls
 
 from app.api.core.huggingface_services import GenerationService
 from app.api.core.schemas import TextModelRequest,TextModelResponse
