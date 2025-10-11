@@ -58,10 +58,10 @@ def generate_text(pipe, prompt: str,
     predictions = pipe(
         prompt_text,
         temperature=temperature,
-        max_new_tokens=256,
+        max_new_tokens=max_new_tokens,
         do_sample=True,
-        top_k=50,
-        top_p=0.95,        
+        top_k=top_k,
+        top_p=top_p,        
         #token_id=getattr(tok, "eos_token_id", None),
         #eos_token_id=getattr(tok, "eos_token_id", None),
         return_full_text=False,  # only generated completion

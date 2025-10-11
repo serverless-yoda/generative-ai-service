@@ -45,6 +45,6 @@ next-env.d.ts
 /app/__*
 *.csv
 
+# remove cache files
 **/__pycache__/
 *.pyc
-

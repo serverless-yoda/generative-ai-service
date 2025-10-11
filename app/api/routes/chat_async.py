@@ -1,4 +1,4 @@
-# generative-ai-service/app/api/routes/chat.py
+# generative-ai-service/app/api/routes/chat_async.py
 import asyncio
 from fastapi import Depends,APIRouter, HTTPException
 

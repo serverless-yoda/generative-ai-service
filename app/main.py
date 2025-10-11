@@ -6,6 +6,8 @@ from app.api.routes.audio_async import router as audio_router
 from app.api.routes.image_async import router as image_router
 from app.api.routes.three_d_async import router as three_d_router
 from app.api.routes.video_async import router as video_router
+from app.api.routes.text_async import router as text_router
+
 
 from app.api.core.lifespan import ai_lifespan
 
@@ -22,6 +24,8 @@ app.include_router(audio_router,   prefix="/generate", tags=['async'])
 app.include_router(image_router,   prefix="/generate", tags=['async'])
 app.include_router(three_d_router, prefix="/generate", tags=['async'])
 app.include_router(video_router,   prefix="/generate", tags=['async'])
+app.include_router(text_router,   prefix="/generate", tags=['async'])
+
 
 @app.get("/")
 async def root():
