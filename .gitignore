@@ -44,3 +44,7 @@ next-env.d.ts
 /genai-service
 /app/__*
 *.csv
+
+# remove cache files
+**/__pycache__/
+*.pyc
