@@ -51,3 +51,4 @@ next-env.d.ts
 
 # dont add upload folder
 /upload
+*.txt
