@@ -51,4 +51,5 @@ next-env.d.ts
 
 # dont add upload folder
 /upload
+/qdrant_storage
 *.txt

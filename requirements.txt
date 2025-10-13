@@ -18,6 +18,8 @@ asyncio # needed for webscraping
 lxml    # needed for webscraping
 python-multipart # for creating rag
 aiofiles         # for creating rag
+qdrant_client    # for creating rag
+pypdf            # for creating rag
 tiktoken
 av     # implements Python bindings to the popular ffmpeg video processing library
 isort  # Sorts imports in Python modules
