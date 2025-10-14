@@ -10,6 +10,7 @@ from app.api.routes.huggingface.text_async import router as text_router
 
 # rag
 from app.api.routes.rag.fileupload_async import router as upload_router
+from app.api.routes.rag.rag_text_async import router as rag_text_router
 
 from app.api.core.lifespan import ai_lifespan
 
@@ -21,14 +22,14 @@ app = FastAPI(title="Generative AI Service",lifespan = ai_lifespan)
 # register middleware
 app.middleware("http")(monitor_service)
 
-app.include_router(chat_router,    prefix="/generate", tags=['huggingface'])
-app.include_router(audio_router,   prefix="/generate", tags=['huggingface'])
-app.include_router(image_router,   prefix="/generate", tags=['huggingface'])
-app.include_router(three_d_router, prefix="/generate", tags=['huggingface'])
-app.include_router(video_router,   prefix="/generate", tags=['huggingface'])
-app.include_router(text_router,    prefix="/generate", tags=['huggingface'])
-app.include_router(upload_router,  prefix="/file",     tags=['rag'])
-
+app.include_router(chat_router,     prefix="/generate", tags=['huggingface'])
+app.include_router(audio_router,    prefix="/generate", tags=['huggingface'])
+app.include_router(image_router,    prefix="/generate", tags=['huggingface'])
+app.include_router(three_d_router,  prefix="/generate", tags=['huggingface'])
+app.include_router(video_router,    prefix="/generate", tags=['huggingface'])
+app.include_router(text_router,     prefix="/generate", tags=['huggingface'])
+app.include_router(upload_router,   prefix="/file",     tags=['rag'])
+app.include_router(rag_text_router, prefix="/rag",      tags=['rag'])
 
 @app.get("/")
 async def root():

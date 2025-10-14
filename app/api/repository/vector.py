@@ -76,7 +76,7 @@ class VectorRepository:
         )
         response = await self.db_client.query_points(
                         collection_name=collection_name,
-                        query_vector=query_vector,
+                        query=query_vector,
                         limit=retrieval_limit,
                         score_threshold=score_threshold,
                     )
