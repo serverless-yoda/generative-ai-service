@@ -11,8 +11,8 @@ from fastapi import (
 
 from app.api.core.huggingface_services import GenerationService
 from app.api.core.schemas import TextModelRequest,TextModelResponse
-from app.api.dependencies import get_urls_contents, get_rag_content
-
+from app.api.rag.rag_dependencies import  get_rag_content
+from app.api.dependencies import get_urls_contents
 router = APIRouter()
 
 

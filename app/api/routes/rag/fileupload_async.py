@@ -11,7 +11,8 @@ from fastapi import (
         )
 from pathlib import Path
 from app.api.common.pdf_extractor import pdf_to_text_extractor
-from app.api.core.rag_services import vector_service
+from app.api.rag.rag_services import vector_service
+
 
 router = APIRouter()
 

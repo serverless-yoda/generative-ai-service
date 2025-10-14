@@ -3,7 +3,8 @@ import os, aiofiles
 from aiofiles.os import makedirs
 from fastapi import UploadFile
 
-DEFAULT_CHUNK_SIZE = 1024 * 1024 * 50
+#DEFAULT_CHUNK_SIZE = 1024 * 1024 * 50
+DEFAULT_CHUNK_SIZE = 1024 * 4  # 4 KB
 
 async def save_file(file: UploadFile) -> str:
     await makedirs('upload', exist_ok=True)
