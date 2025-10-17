@@ -4,7 +4,7 @@ from fastapi import Body
 from loguru import logger
 
 
-from app.api.core.schemas import TextModelRequest
+from app.api.core.huggingface.schemas import TextModelRequest
 from app.api.rag.data_transformation import embed
 from app.api.rag.rag_services import vector_service
 

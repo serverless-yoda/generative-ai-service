@@ -2,10 +2,10 @@
 import asyncio
 from fastapi import APIRouter, HTTPException, Depends, Query, Body,status
 from fastapi.responses import StreamingResponse
-from app.api.core.schemas import ImageModelRequest, ImageModelResponse, ImageSize
+from app.api.core.huggingface.schemas import ImageModelRequest, ImageModelResponse, ImageSize
 
-from app.api.core.huggingface_services import GenerationService
-from app.api.core.utils import export_to_image_buffer
+from app.api.core.huggingface.service import GenerationService
+from app.api.core.huggingface.utils import export_to_image_buffer
 
 router = APIRouter()
 

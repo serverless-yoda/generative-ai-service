@@ -1,10 +1,10 @@
-# generative-ai-service/app/api/core/lifespan.py
+# generative-ai-service/app/api/core/huggingface/lifespan.py
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from fastapi import FastAPI
 
 
-from app.api.models.huggingface_models import (
+from app.api.models.huggingface.models import (
     load_text_model,
     load_audio_model,
     load_image_model,

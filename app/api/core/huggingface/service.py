@@ -1,8 +1,8 @@
-# generative-ai-service/app/api/core/services.py
+# generative-ai-service/app/api/core/huggingface/services.py
 from fastapi.responses import StreamingResponse
 from fastapi import Request,Depends
 
-from app.api.models.huggingface_models import (
+from app.api.models.huggingface.models import (
     load_text_model,  generate_text,
     load_audio_model, generate_audio,
     load_image_model, generate_image,

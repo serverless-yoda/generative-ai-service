@@ -1,4 +1,4 @@
-# app/api/models/huggingface_models.py
+# app/api/models/huggingface/models.py
 from __future__ import annotations
 
 import os
@@ -10,7 +10,7 @@ import torch
 from numpy.typing import NDArray
 from PIL import Image
 
-from app.api.core.schemas import VoicePresets
+from app.api.core.huggingface.schemas import VoicePresets
 
 # ----- Global runtime config (lightweight) -----
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -119,7 +119,7 @@ def generate_audio(
 def load_image_model():
     from diffusers import DiffusionPipeline  # lazy import
     pipe = DiffusionPipeline.from_pretrained(
-        "segmind/tiny-sd", dtype=dtype
+        "segmind/tiny-sd", torch_dtype=dtype
     )
     # Move after construction (not in from_pretrained)
     pipe.to(device)

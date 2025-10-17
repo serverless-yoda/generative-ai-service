@@ -12,7 +12,7 @@ from app.api.routes.huggingface.text_async import router as text_router
 from app.api.routes.rag.fileupload_async import router as upload_router
 from app.api.routes.rag.rag_text_async import router as rag_text_router
 
-from app.api.core.lifespan import ai_lifespan
+from app.api.core.huggingface.lifespan import ai_lifespan
 
 # middleware
 from app.api.middleware.monitor_service import monitor_service

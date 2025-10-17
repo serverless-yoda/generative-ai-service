@@ -1,4 +1,4 @@
-# generative-ai-service/app/api/core/utils.py
+# generative-ai-service/app/api/core/huggingface/utils.py
 
 import soundfile, wave, av, os, tempfile
 import numpy as np

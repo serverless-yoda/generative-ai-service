@@ -4,8 +4,8 @@ import asyncio
 from fastapi import APIRouter, HTTPException, Depends, Query, UploadFile,File
 from fastapi.responses import StreamingResponse
 
-from app.api.core.huggingface_services import GenerationService
-from app.api.core.utils import export_to_video_buffer
+from app.api.core.huggingface.service import GenerationService
+from app.api.core.huggingface.utils import export_to_video_buffer
 
 router = APIRouter()
 

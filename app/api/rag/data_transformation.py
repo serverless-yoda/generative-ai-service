@@ -26,8 +26,8 @@ def clean_text(content: str) -> str:
 
     
 def embed(text: str) -> list[float]:
-    if len(text) > 2000:  # or use token count
-        raise ValueError("Text too long for embedding model")
+    #if len(text) > 2000:  # or use token count
+    #    raise ValueError("Text too long for embedding model")
     return embedder.encode(text).tolist()
 
 def chunk_text(text: str, max_tokens: int = 512) -> list[str]:

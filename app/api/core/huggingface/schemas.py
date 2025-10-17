@@ -1,3 +1,4 @@
+# generative-ai-service/app/api/core/huggingface/schemas.py
 from typing import Literal, Annotated
 from uuid import uuid4
 from datetime import datetime
@@ -13,7 +14,7 @@ from pydantic import (
     model_validator,
 )
 
-from app.api.core.utils import count_tokens
+from app.api.core.huggingface.utils import count_tokens
 
 VoicePresets = Literal['v2/en_speaker_1', 'v2/en_speaker_9']
 ImageSize = Annotated[

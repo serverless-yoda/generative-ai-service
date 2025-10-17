@@ -2,7 +2,7 @@
 import asyncio
 from fastapi import Depends,APIRouter, HTTPException
 
-from app.api.core.huggingface_services import GenerationService
+from app.api.core.huggingface.service import GenerationService
 
 router = APIRouter()
 

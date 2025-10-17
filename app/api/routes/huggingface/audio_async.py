@@ -3,9 +3,9 @@ import asyncio
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import StreamingResponse
 
-from app.api.core.huggingface_services import GenerationService
-from app.api.core.schemas import VoicePresets
-from app.api.core.utils import audio_array_to_buffer
+from app.api.core.huggingface.service import GenerationService
+from app.api.core.huggingface.schemas import VoicePresets
+from app.api.core.huggingface.utils import audio_array_to_buffer
 
 router = APIRouter()
 
