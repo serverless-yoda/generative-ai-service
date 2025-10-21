@@ -1,7 +1,9 @@
-# generative-ai-service/app/api/core/huggingface/lifespan.py
+# generative-ai-service/app/api/core/lifespan.py
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 from fastapi import FastAPI
+
+from app.api.db.database import engine, init_db
 
 
 from app.api.models.huggingface.models import (
@@ -13,7 +15,7 @@ from app.api.models.huggingface.models import (
 )
 
 
-models = {}
+#models = {}
 
 @asynccontextmanager
 async def ai_lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -24,8 +26,9 @@ async def ai_lifespan(app: FastAPI) -> AsyncIterator[None]:
         "HF_video": load_video_model(),
         "HF_3d":    load_3d_model(),
     }
+    await init_db()
     try:
         yield
     finally:
        app.state.models.clear()
-    
+       await engine.dispose()

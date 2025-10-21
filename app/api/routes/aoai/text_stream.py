@@ -1,7 +1,7 @@
 # app/api/routes/aoai/text_streaming.py
 
 from fastapi.responses import StreamingResponse
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter
 
 from app.api.core.aoai.service import azure_chat_client
 

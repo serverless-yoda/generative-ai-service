@@ -25,3 +25,6 @@ av     # implements Python bindings to the popular ffmpeg video processing libra
 isort  # Sorts imports in Python modules
 loguru # Replacing Python’s built-in logger module
 mypy   # A powerful static type checker that can help catch a lot of bugs in your code
+alembic     # db application 
+sqlalchemy  # db application
+psycopg[binary]    # db application

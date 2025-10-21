@@ -7,10 +7,13 @@ from typing import Annotated
 class Settings(BaseSettings):
     # Define the application name with a default value
     app_name: str = "Generative AI Services"
-    azure_endpoint_url: Annotated[HttpUrl, Field(alias='azure_endpoint_url')]
-    azure_deployment_name: Annotated[str, Field(min_length=5, default='gpt-5-nano')]
-    azure_openai_api_key: Annotated[str, Field(min_length=5)]
-    azure_openai_version:Annotated[str, Field(min_length=5, default='2024-12-01-preview')]
+    azure_endpoint_url:     Annotated[HttpUrl, Field(alias='azure_endpoint_url')]
+    azure_deployment_name:  Annotated[str, Field(min_length=5, default='gpt-5-nano')]
+    azure_openai_api_key:   Annotated[str, Field(min_length=5)]
+    azure_openai_version:   Annotated[str, Field(min_length=5, default='2024-12-01-preview')]
+    postgres_username:      Annotated[str, Field(min_length=5)]
+    postgres_password:      Annotated[str, Field(min_length=5)]
+    postgres_db:            Annotated[str, Field(min_length=5)]
 
     model_config = SettingsConfigDict(
         env_file = ".env",

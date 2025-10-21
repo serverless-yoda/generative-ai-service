@@ -16,8 +16,10 @@ from app.api.routes.rag.rag_text_async import router as rag_text_router
 
 # aoai
 from app.api.routes.aoai.text_stream import router as stream_router
+# postgres
+from app.api.routes.postgres.conversation import router as conversation_router
 
-from app.api.core.huggingface.lifespan import ai_lifespan
+from app.api.core.lifespan import ai_lifespan
 
 # middleware
 from app.api.middleware.monitor_service import monitor_service
@@ -34,15 +36,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(chat_router,     prefix="/generate", tags=['huggingface'])
-app.include_router(audio_router,    prefix="/generate", tags=['huggingface'])
-app.include_router(image_router,    prefix="/generate", tags=['huggingface'])
-app.include_router(three_d_router,  prefix="/generate", tags=['huggingface'])
-app.include_router(video_router,    prefix="/generate", tags=['huggingface'])
-app.include_router(text_router,     prefix="/generate", tags=['huggingface'])
-app.include_router(upload_router,   prefix="/file",     tags=['rag'])
-app.include_router(rag_text_router, prefix="/rag",      tags=['rag'])
-app.include_router(stream_router,   prefix="/generate", tags=['azure openai'])
+app.include_router(chat_router,           prefix="/generate", tags=['huggingface'])
+app.include_router(audio_router,          prefix="/generate", tags=['huggingface'])
+app.include_router(image_router,          prefix="/generate", tags=['huggingface'])
+app.include_router(three_d_router,        prefix="/generate", tags=['huggingface'])
+app.include_router(video_router,          prefix="/generate", tags=['huggingface'])
+app.include_router(text_router,           prefix="/generate", tags=['huggingface'])
+app.include_router(upload_router,         prefix="/file",     tags=['rag'])
+app.include_router(rag_text_router,       prefix="/rag",      tags=['rag'])
+app.include_router(stream_router,         prefix="/generate", tags=['azure openai'])
+app.include_router(conversation_router,   prefix="/postgres", tags=['database'])
 
 
 @app.get("/")
