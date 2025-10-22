@@ -16,4 +16,4 @@ class ConversationUpdate(ConversationBase):
 class ConversationOut(ConversationBase):
     id: int
     created_at: datetime
-    update_at:datetime
+    updated_at:datetime

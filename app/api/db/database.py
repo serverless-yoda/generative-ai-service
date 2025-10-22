@@ -7,7 +7,7 @@ from typing import Annotated
 from fastapi import Depends
 
 database_url = (
-f"postgresql+psycopg://{settings.postgres_username}:{settings.postgres_password}@localhost:5432/{settings.postgres_db}"
+f"postgresql+asyncpg://{settings.postgres_username}:{settings.postgres_password}@localhost:5432/{settings.postgres_db}"
 )
 
 engine = create_async_engine(database_url, echo=True)
@@ -29,6 +29,6 @@ async def get_db_session():
         await session.rollback()
         raise
     finally:
-        await session.clode()
+        await session.close()
 
 DBSessionDep = Annotated[AsyncSession, Depends(get_db_session)]

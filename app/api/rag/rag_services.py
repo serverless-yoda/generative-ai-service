@@ -1,7 +1,7 @@
 # app/api/rag/rag_services.py
 import os
 from loguru import logger
-from app.api.repository.vector import VectorRepository
+from app.api.repository.vector_repository import VectorRepository
 from app.api.rag.data_transformation import clean_text,embed,load, chunk_text
 
 class VectorService(VectorRepository):

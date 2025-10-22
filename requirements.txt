@@ -28,3 +28,4 @@ mypy   # A powerful static type checker that can help catch a lot of bugs in you
 alembic     # db application 
 sqlalchemy  # db application
 psycopg[binary]    # db application
+asyncpg # db application
